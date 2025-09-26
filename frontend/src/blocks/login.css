@@ -1,0 +1,79 @@
+.login__form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width: 80%;
+  margin-top: 12px;
+}
+
+.login__form-title {
+  font-size: 24px;
+  margin-top: 60px;
+  margin-bottom: 50px;
+}
+
+.login__form-fieldset {
+  display: flex;
+  flex-direction: column;
+  width: 358px;
+  gap: 30px;
+  border: none; /* Quita el borde del fieldset */
+  padding-bottom: 15px; /* Espacio inferior para separar del botón */
+}
+
+.form__input.form__input-email,
+.form__input.form__input-password {
+  background-color: #000;
+  color: #fff;
+}
+
+.login__form-submit_button {
+  width: 358px; /* Ocupa todo el ancho del formulario */
+  padding: 12px 0; /* Ajusta el alto */
+  font-size: 1rem; /* Tamaño de texto */
+  background: #fff; /* Color de fondo */
+  color: #000; /* Color de texto */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 215px;
+}
+
+.login__form-footer {
+  text-align: center;
+  width: 100%;
+  margin-top: 24px; /* Opcional: separa del formulario */
+}
+
+.login__form-footer-link a {
+  color: #fff;
+  text-decoration: none; /* Opcional: quita el subrayado */
+  font-weight: bold; /* Opcional: resalta el enlace */
+}
+
+/* @media screen and (min-width: 641px) and (max-width: 920px) {
+  .login__form-fieldset {
+    max-width: 362px;
+  }
+} */
+@media screen and (max-width: 640px) {
+  .login__form {
+    width: 90%;
+  }
+
+  .login__form-fieldset {
+    width: 100%;
+  }
+
+  .login__form-submit_button {
+    max-width: 260px;
+  }
+
+  .form__input.form__input-email,
+  .form__input.form__input-password {
+    align-self: center;
+    max-width: 260px;
+  }
+}

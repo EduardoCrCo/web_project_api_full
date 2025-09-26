@@ -1,0 +1,10 @@
+.page {
+  background-color: #000;
+  max-width: 1280px;
+  font-family: "Inter-Regular", Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  color: #fff;
+  margin: auto;
+  min-height: 100vh;
+}

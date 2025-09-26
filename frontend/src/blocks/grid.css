@@ -1,0 +1,106 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-gap: 20px 17px;
+  margin: 0 auto;
+  padding-top: 50px;
+}
+/* ------------------------------- */
+.grid-card {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  max-width: 282px;
+  max-height: 361px;
+  overflow: hidden;
+  position: relative;
+}
+.grid-card__button-trash {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  width: 18px;
+  height: 20px;
+  position: absolute;
+  top: 18px;
+  right: 15px;
+}
+
+.grid-card__button-trash-image {
+  width: 18px;
+  height: 20px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+
+.grid-card__button-trash-image:hover {
+  opacity: 60%;
+}
+.grid-card__image {
+  width: 100%;
+  height: 100%;
+}
+
+.grid-card__paragraph-and-image {
+  display: flex;
+  justify-content: space-between;
+  width: 246px;
+  margin: 25px auto 31px;
+}
+/* ----------------------------- */
+.grid-card__paragraph {
+  max-width: 220px;
+  font-family: "Inter-Black", Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  margin: 0;
+  color: #000;
+}
+
+.grid-card__paragraph_text_overflow {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* ------------------------------*/
+.grid-card__button-like {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.grid-card__button-like-image {
+  width: 21px;
+  height: 19px;
+}
+.grid-card__button-like-image:hover {
+  opacity: 60%;
+}
+
+.grid-card__button-like_active {
+  background-image: url(../images/active-like.png);
+}
+
+/* ------------------------------- */
+
+@media screen and (min-width: 641px) and (max-width: 920px) {
+  .grid {
+    max-width: 581px;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .grid {
+    max-width: 282px;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    padding-top: 36px;
+  }
+}
