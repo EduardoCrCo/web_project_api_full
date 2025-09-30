@@ -48,6 +48,10 @@ class Api {
       },
     };
 
+    if (this._token) {
+      config.headers.Authorization = this._token;
+    }
+
     if (method !== "GET" && method !== "DELETE") {
       config["body"] = JSON.stringify(body);
     }
@@ -62,8 +66,10 @@ class Api {
 }
 
 const api = new Api(
-  "https://around-api.es.tripleten-services.com/v1/",
-  "5d461074-8677-4fd5-9be2-f4f44a14b147"
+  "http://api.web-project-around.ignorelist.com/",
+  localStorage.getItem("token")
+    ? `Bearer ${localStorage.getItem("token")}`
+    : null
 );
 
 export default api;
