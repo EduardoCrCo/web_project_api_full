@@ -1,54 +1,110 @@
-import express from 'express'
-import mongoose from 'mongoose'
+import express from "express";
+import mongoose from "mongoose";
 import cors from "cors";
-import { errors } from 'celebrate'
-import cardsRouter from './routes/cards.js'
-import usersRouter from './routes/users.js'
-import authRouter from './routes/auth.js'
-import auth from './middlewares/auth.js'
-import errorHandler from './middlewares/errorHandler.js'
-import { requestLogger, errorLogger } from './middlewares/logger.js'
+import { errors } from "celebrate";
+import cardsRouter from "./routes/cards.js";
+import usersRouter from "./routes/users.js";
+import authRouter from "./routes/auth.js";
+import auth from "./middlewares/auth.js";
+import errorHandler from "./middlewares/errorHandler.js";
+import { requestLogger, errorLogger } from "./middlewares/logger.js";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import dotenv from "dotenv";
 
-mongoose.connect('mongodb://localhost:27017/aroundb')
+dotenv.config();
 
-const app = express()
+const {
+  PORT = 3000,
+  MONGO_URL = "mongodb://127.0.0.1:27017/aroundb",
+  ALLOWED_ORIGINS = "http://localhost:3000",
+  NODE_ENV = "development",
+} = process.env;
 
-app.use(cors({
-  origin: [
-    'http://web-project-around.ignorelist.com',
-    'https://web-project-around.ignorelist.com',
-    'http://localhost:3000'
-  ],
-  credentials: true
-}));
+mongoose
+  .connect(MONGO_URL)
+  .then(() => {
+    if (NODE_ENV !== "test") console.log("MongoDB conectado");
+  })
+  .catch((err) => {
+    console.error("Error conexión Mongo:", err);
+    process.exit(1);
+  });
 
+const app = express();
 
-app.use(requestLogger)
+const allowedOrigins = new Set(
+  ALLOWED_ORIGINS.split(",")
+    .map((o) => o.trim())
+    .filter(Boolean)
+);
 
-app.use(express.json()) // para parsear application/json
-app.use(express.urlencoded({ extended: true }))
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      if (!origin) {
+        console.log("[CORS] allow (no origin header)");
+        return cb(null, true);
+      }
+      if (allowedOrigins.has(origin)) {
+        console.log(`[CORS] allow ${origin}`);
+        return cb(null, true);
+      }
+      console.warn(`[CORS] block ${origin}`);
+      return cb(new Error("CORS_NOT_ALLOWED"));
+    },
+    credentials: true,
+  })
+);
 
-app.use(authRouter)
+app.use((err, req, res, next) => {
+  if (err && err.message === "CORS_NOT_ALLOWED") {
+    return res.status(403).json({ message: "Origin not allowed by CORS" });
+  }
+  return next(err);
+});
 
-app.use(auth)
+app.use(helmet());
 
-app.use(cardsRouter)
-app.use(usersRouter)
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 15,
+  message: { message: "Demasiados intentos. Intenta más tarde." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(globalLimiter);
+
+app.use(requestLogger);
+app.use(express.json({ limit: "16kb" }));
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/signin", authLimiter);
+app.use("/signup", authLimiter);
+
+app.use(authRouter);
+app.use(auth);
+app.use(cardsRouter);
+app.use(usersRouter);
+
+app.use("*", (req, res) => {
+  res.status(404).send({
+    message: "Endpoint not found",
+  });
+});
 
 app.use(errorLogger);
 app.use(errors());
+app.use(errorHandler);
 
-app.use('/', (req, res) => {
-  res.status(404).send({
-    message: 'Endpoint not found',
-  })
-})
-
-
-// Middleware de manejo de errores - DEBE IR AL FINAL
-app.use(errorHandler)
-
-const port = 3000
-app.listen(port, () => {
-  console.log(`Servidor escuchando en el puerto ${port}`)
-})
+app.listen(PORT, () => {
+  console.log(`Server running on port  ${PORT}`);
+});
