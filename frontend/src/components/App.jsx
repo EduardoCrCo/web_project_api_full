@@ -58,7 +58,7 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("jwt");
     if (token) {
-      fetch("https://www.api.web-project-around.ignorelist.com/users/me", {
+      fetch("https://api.web-project-around.ignorelist.com/users/me", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -108,11 +108,11 @@ function App() {
   };
 
   const handleLogin = () => {
-    setIsLoggedIn(true);
     const token = localStorage.getItem("jwt");
-    fetch("https://www.api.web-project-around.ignorelist.com/signin", {
+
+    fetch("https://api.web-project-around.ignorelist.com/signin", {
       method: "POST",
-      headers: {ProtectedRoute.jsx
+      headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },

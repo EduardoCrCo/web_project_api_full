@@ -68,9 +68,7 @@ class Api {
 
 const api = new Api(
   "https://api.web-project-around.ignorelist.com/",
-  localStorage.getItem("token")
-    ? `Bearer ${localStorage.getItem("token")}`
-    : null
+  localStorage.getItem("jwt") ? `Bearer ${localStorage.getItem("jwt")}` : null
 );
 
 export default api;
