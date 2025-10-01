@@ -40,6 +40,7 @@ class Api {
   }
 
   _makeRequest(path, method = "GET", body = {}) {
+    const token = localStorage.getItem("jwt");
     const config = {
       method,
       headers: {

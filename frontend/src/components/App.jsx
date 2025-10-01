@@ -110,7 +110,7 @@ function App() {
   const handleLogin = () => {
     setIsLoggedIn(true);
     const token = localStorage.getItem("jwt");
-    fetch("https://api.web-project-around.ignorelist.com/users/me", {
+    fetch("https://api.web-project-around.ignorelist.com/signin", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -118,11 +118,16 @@ function App() {
       },
     })
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
-      .then((data) => {
+      .ten((data) => {
         setEmail(data.data.email);
-      });
+        setIsLoggedIn(true);
+      })
+      .catch((error) => {
+        console.error("Error en el login:", error);
+        setIsLoggedIn(false);
 
-    // Puedes agregar más lógica aquí si lo necesitas
+        alert("Usuario no encontrado o no registrado");
+      });
   };
 
   const showErrorTooltip = (message) => {
