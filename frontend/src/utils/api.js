@@ -66,7 +66,7 @@ class Api {
 }
 
 const api = new Api(
-  "http://api.web-project-around.ignorelist.com/",
+  "https://api.web-project-around.ignorelist.com/",
   localStorage.getItem("token")
     ? `Bearer ${localStorage.getItem("token")}`
     : null
