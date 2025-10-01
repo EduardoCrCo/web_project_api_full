@@ -2,15 +2,15 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import { errors } from "celebrate";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import dotenv from "dotenv";
 import cardsRouter from "./routes/cards.js";
 import usersRouter from "./routes/users.js";
 import authRouter from "./routes/auth.js";
 import auth from "./middlewares/auth.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { requestLogger, errorLogger } from "./middlewares/logger.js";
-import helmet from "helmet";
-import rateLimit from "express-rate-limit";
-import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -95,7 +95,7 @@ app.use(auth);
 app.use(cardsRouter);
 app.use(usersRouter);
 
-app.use("*", (req, res) => {
+app.use("/", (req, res) => {
   res.status(404).send({
     message: "Endpoint not found",
   });
