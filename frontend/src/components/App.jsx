@@ -58,7 +58,7 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("jwt");
     if (token) {
-      fetch("https://se-register-api.en.tripleten-services.com/v1/users/me", {
+      fetch("https://api.web-project-around.ignorelist.com//users/me", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
