@@ -111,7 +111,7 @@ function App() {
     setIsLoggedIn(true);
     const token = localStorage.getItem("jwt");
     fetch("https://www.api.web-project-around.ignorelist.com/signin", {
-      method: "GET",
+      method: "POST",
       headers: {ProtectedRoute.jsx
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
