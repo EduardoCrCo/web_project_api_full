@@ -62,6 +62,7 @@ app.use(
     origin: "https://web-project-around.ignorelist.com",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 
