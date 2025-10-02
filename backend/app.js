@@ -57,8 +57,14 @@ const allowedOrigins = new Set(
 //   })
 // );
 
-app.use(cors());
-
+// app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 // app.use((err, req, res, next) => {
 //   if (err && err.message === "CORS_NOT_ALLOWED") {
 //     return res.status(403).json({ message: "Origin not allowed by CORS" });
