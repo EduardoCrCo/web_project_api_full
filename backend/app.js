@@ -56,7 +56,6 @@ const allowedOrigins = new Set(
 //     credentials: true,
 //   })
 // );
-
 // app.use(cors());
 app.use(
   cors({
@@ -65,6 +64,9 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+app.options("*", cors());
+
 // app.use((err, req, res, next) => {
 //   if (err && err.message === "CORS_NOT_ALLOWED") {
 //     return res.status(403).json({ message: "Origin not allowed by CORS" });
