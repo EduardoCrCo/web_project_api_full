@@ -103,8 +103,8 @@ app.use(
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/signin", authLimiter);
-app.use("/signup", authLimiter);
+app.use("/signin" /*authLimiter*/);
+app.use("/signup" /*authLimiter*/);
 
 app.use(authRouter);
 app.use(auth);
@@ -121,6 +121,6 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port  ${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port  0.0.0.0:${PORT}`);
 });
