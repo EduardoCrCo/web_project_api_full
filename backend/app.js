@@ -59,7 +59,7 @@ const allowedOrigins = new Set(
 // app.use(cors());
 app.use(
   cors({
-    origin: "*",
+    origin: "https://web-project-around.ignorelist.com",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -74,14 +74,14 @@ app.options("*", cors());
 //   return next(err);
 // });
 
-app.use(helmet());
+//app.use(helmet());
 
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+// const globalLimiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 100,
+//   standardHeaders: true,
+//   legacyHeaders: false,
+// });
 
 // const authLimiter = rateLimit({
 //   windowMs: 15 * 60 * 1000,
@@ -91,14 +91,15 @@ const globalLimiter = rateLimit({
 //   legacyHeaders: false,
 // });
 
-app.use(globalLimiter);
+// app.use(globalLimiter);
 
 app.use(requestLogger);
 app.use(
   express.json({
-    /* limit: "16kb" */
+    /*limit: "16kb",*/
   })
 );
+
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/signin", authLimiter);
