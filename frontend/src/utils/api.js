@@ -1,7 +1,7 @@
 class Api {
   constructor(url, token) {
     this._url = url;
-    this._token = token;
+    // this._token = token;
   }
   getUserInfo() {
     return this._makeRequest("users/me");
@@ -40,17 +40,16 @@ class Api {
   }
 
   _makeRequest(path, method = "GET", body = {}) {
-    const token = localStorage.getItem("jwt");
     const config = {
       method,
       headers: {
         "Content-Type": "application/json",
-        Authorization: this._token,
+        // Authorization: this._token,
       },
     };
-
+    const token = localStorage.getItem("token");
     if (token) {
-      config.headers.Authorization = this._token;
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
     if (method !== "GET" && method !== "DELETE") {
@@ -68,7 +67,9 @@ class Api {
 
 const api = new Api(
   "https://api.web-project-around.ignorelist.com/",
-  localStorage.getItem("jwt") ? `Bearer ${localStorage.getItem("jwt")}` : null
+  localStorage.getItem("token")
+    ? `Bearer ${localStorage.getItem("token")}`
+    : null
 );
 
 export default api;
