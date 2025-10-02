@@ -49,7 +49,7 @@ class Api {
       },
     };
 
-    if (this._token) {
+    if (token) {
       config.headers.Authorization = this._token;
     }
 

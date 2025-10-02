@@ -1,4 +1,4 @@
-export const BASE_URL = "https://www.api.web-project-around.ignorelist.com";
+export const BASE_URL = "https://api.web-project-around.ignorelist.com";
 
 export const register = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {

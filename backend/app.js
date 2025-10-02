@@ -39,30 +39,32 @@ const allowedOrigins = new Set(
     .filter(Boolean)
 );
 
-app.use(
-  cors({
-    origin: (origin, cb) => {
-      if (!origin) {
-        console.log("[CORS] allow (no origin header)");
-        return cb(null, true);
-      }
-      if (allowedOrigins.has(origin)) {
-        console.log(`[CORS] allow ${origin}`);
-        return cb(null, true);
-      }
-      console.warn(`[CORS] block ${origin}`);
-      return cb(new Error("CORS_NOT_ALLOWED"));
-    },
-    credentials: true,
-  })
-);
+#app.use(
+# cors({
+#    origin: (origin, cb) => {
+#      if (!origin) {
+#        console.log("[CORS] allow (no origin header)");
+#        return cb(null, true);
+#      }
+#      if (allowedOrigins.has(origin)) {
+#        console.log(`[CORS] allow ${origin}`);
+#        return cb(null, true);
+#      }
+#      console.warn(`[CORS] block ${origin}`);
+#      return cb(new Error("CORS_NOT_ALLOWED"));
+#    },
+#    credentials: true,
+#  })
+#);
 
-app.use((err, req, res, next) => {
-  if (err && err.message === "CORS_NOT_ALLOWED") {
-    return res.status(403).json({ message: "Origin not allowed by CORS" });
-  }
-  return next(err);
-});
+app.use(cors());
+
+#app.use((err, req, res, next) => {
+#  if (err && err.message === "CORS_NOT_ALLOWED") {
+#    return res.status(403).json({ message: "Origin not allowed by CORS" });
+#  }
+#  return next(err);
+#});
 
 app.use(helmet());
 
