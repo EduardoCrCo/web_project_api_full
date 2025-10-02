@@ -83,18 +83,22 @@ const globalLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 15,
-  message: { message: "Demasiados intentos. Intenta más tarde." },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+// const authLimiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 15,
+//   message: { message: "Demasiados intentos. Intenta más tarde." },
+//   standardHeaders: true,
+//   legacyHeaders: false,
+// });
 
 app.use(globalLimiter);
 
 app.use(requestLogger);
-app.use(express.json({ limit: "16kb" }));
+app.use(
+  express.json({
+    /* limit: "16kb" */
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/signin", authLimiter);
