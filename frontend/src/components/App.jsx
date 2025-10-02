@@ -118,7 +118,7 @@ function App() {
       },
     })
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
-      .ten((data) => {
+      .then((data) => {
         setEmail(data.data.email);
         setIsLoggedIn(true);
       })
