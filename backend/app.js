@@ -52,12 +52,12 @@ app.use(
     },
     //origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
     credentials: true,
   })
 );
 
-// app.options("*", cors());
+app.options("*", cors());
 
 app.use((err, req, res, next) => {
   if (err && err.message === "CORS_NOT_ALLOWED") {
