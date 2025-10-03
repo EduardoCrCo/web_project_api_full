@@ -84,16 +84,14 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      api
-        .getUserInfo()
-        .then((user) => {
-          setCurrentUser(user.data);
-        })
-        .catch((err) => {
-          console.error("Error fetching user info:", err);
-        });
-    }
+    //
+    api.getUserInfo().then((user) => {
+      setCurrentUser(user);
+    });
+    //     .catch((err) => {
+    //       console.error("Error fetching user info:", err);
+    //     });
+    // }
   }, [isLoggedIn]);
 
   const handleUpdateUser = (data) => {
