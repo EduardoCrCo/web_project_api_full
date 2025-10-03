@@ -42,7 +42,7 @@ app.use(
   })
 );
 
-app.options("/api/users", cors());
+app.options("*", cors());
 
 app.use((err, req, res, next) => {
   if (err && err.message === "CORS_NOT_ALLOWED") {
