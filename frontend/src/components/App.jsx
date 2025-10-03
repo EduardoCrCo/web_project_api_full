@@ -72,7 +72,7 @@ function App() {
         .then((data) => {
           setIsLoggedIn(true);
           setEmail(data.data.email);
-          //navigate("/");
+          navigate("/");
         })
         .catch((err) => {
           console.error("Token validation error:", err);
@@ -123,7 +123,7 @@ function App() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        //Authorization: `Bearer ${localStorage.getItem("jwt")}`,
       },
       body: JSON.stringify({ email: email, password: password }),
     })
@@ -131,7 +131,7 @@ function App() {
       .then((data) => {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
-          setEmail(data.data.email);
+          setEmail(data.email);
           setIsLoggedIn(true);
           navigate("/");
         }
@@ -140,6 +140,8 @@ function App() {
         console.error("Error en el login:", error);
         setIsLoggedIn(false);
         showErrorTooltip("Usuario no encontrado o no registrado");
+        localStorage.removeItem("jwt");
+        navigate("/login");
       });
   };
 
