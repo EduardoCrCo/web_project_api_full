@@ -2,8 +2,6 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import { errors } from "celebrate";
-// import helmet from "helmet";
-// import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
 import cardsRouter from "./routes/cards.js";
 import usersRouter from "./routes/users.js";
@@ -31,10 +29,6 @@ mongoose
     process.exit(1);
   });
 
-// const allowedOrigins = ALLOWED_ORIGINS.split(",")
-//   .map((o) => o.trim())
-//   .filter(Boolean);
-
 const app = express();
 
 app.use(
@@ -57,31 +51,9 @@ app.use((err, req, res, next) => {
   return next(err);
 });
 
-// app.use(helmet());
-
-// const globalLimiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 100,
-//   standardHeaders: true,
-//   legacyHeaders: false,
-// });
-
-// const authLimiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 15,
-//   message: { message: "Demasiados intentos. Intenta más tarde." },
-//   standardHeaders: true,
-//   legacyHeaders: false,
-// });
-
-// app.use(globalLimiter);
-
 app.use(requestLogger);
 app.use(express.json({}));
 app.use(express.urlencoded({ extended: true }));
-
-//app.post("/signin", );
-//app.post("/signup", );
 
 app.use(authRouter);
 app.use(auth);
