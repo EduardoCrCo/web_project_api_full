@@ -58,8 +58,7 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
-    if (token) return;
-    {
+    if (token) {
       fetch("https://api.web-project-around.ignorelist.com/users/me", {
         method: "GET",
         headers: {
@@ -73,7 +72,7 @@ function App() {
         .then((data) => {
           setIsLoggedIn(true);
           setEmail(data.data.email);
-          //navigate("/");
+          navigate("/");
         })
         .catch((err) => {
           console.error("Token validation error:", err);
@@ -118,7 +117,7 @@ function App() {
 
   const handleLogin = (email, password) => {
     fetch("https://api.web-project-around.ignorelist.com/signin", {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
