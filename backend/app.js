@@ -39,28 +39,28 @@ const allowedOrigins = new Set(
     .filter(Boolean)
 );
 
-app.use(
-  cors({
-    origin: (origin, cb) => {
-      if (!origin) {
-        console.log("[CORS] allow (no origin header)");
-        return cb(null, true);
-      }
-      if (allowedOrigins.has(origin)) {
-        console.log(`[CORS] allow ${origin}`);
-        return cb(null, true);
-      }
-      console.warn(`[CORS] block ${origin}`);
-      return cb(new Error("CORS_NOT_ALLOWED"));
-    },
-    credentials: true,
-  })
-);
-app.use(cors());
+// app.use(
+//   cors({
+//     origin: (origin, cb) => {
+//       if (!origin) {
+//         console.log("[CORS] allow (no origin header)");
+//         return cb(null, true);
+//       }
+//       if (allowedOrigins.has(origin)) {
+//         console.log(`[CORS] allow ${origin}`);
+//         return cb(null, true);
+//       }
+//       console.warn(`[CORS] block ${origin}`);
+//       return cb(new Error("CORS_NOT_ALLOWED"));
+//     },
+//     credentials: true,
+//   })
+// );
+// app.use(cors());
 
 app.use(
   cors({
-    origin: "https://web-project-around.ignorelist.com",
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
 
