@@ -47,10 +47,10 @@ class Api {
         Authorization: this._token,
       },
     };
-    const token = localStorage.getItem("jwt");
-    if (this._token) {
-      //config.headers.Authorization = `Bearer ${token}`;
-    }
+    // const token = localStorage.getItem("jwt");
+    // if (this._token) {
+    //   config.headers.Authorization = `Bearer ${token}`;
+    // }
 
     if (method !== "GET" && method !== "DELETE") {
       config["body"] = JSON.stringify(body);
