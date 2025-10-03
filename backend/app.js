@@ -9,6 +9,7 @@ import authRouter from "./routes/auth.js";
 import auth from "./middlewares/auth.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { requestLogger, errorLogger } from "./middlewares/logger.js";
+import { whitelist } from "validator";
 
 dotenv.config();
 
@@ -31,11 +32,15 @@ mongoose
 
 const app = express();
 
+whitelist(ALLOWED_ORIGINS);
+
 app.use(
   cors({
-    origin: ALLOWED_ORIGINS.split(",")
-      .map((o) => o.trim())
-      .filter(Boolean),
+    origin: [
+      "http://localhost:3000",
+      "https://web-project-around.ignorelist.com",
+      "https://www.web-project-around.ignorelist.com",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -44,12 +49,12 @@ app.use(
 
 app.options("*", cors());
 
-app.use((err, req, res, next) => {
-  if (err && err.message === "CORS_NOT_ALLOWED") {
-    return res.status(403).json({ message: "Origin not allowed by CORS" });
-  }
-  return next(err);
-});
+// app.use((err, req, res, next) => {
+//   if (err && err.message === "CORS_NOT_ALLOWED") {
+//     return res.status(403).json({ message: "Origin not allowed by CORS" });
+//   }
+//   return next(err);
+// });
 
 app.use(requestLogger);
 app.use(express.json({}));
