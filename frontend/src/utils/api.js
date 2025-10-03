@@ -48,8 +48,8 @@ class Api {
       },
     };
     const token = localStorage.getItem("jwt");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (this._token) {
+      //config.headers.Authorization = `Bearer ${token}`;
     }
 
     if (method !== "GET" && method !== "DELETE") {
