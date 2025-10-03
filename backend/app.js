@@ -31,35 +31,24 @@ mongoose
     process.exit(1);
   });
 
-const allowedOrigins = ALLOWED_ORIGINS.split(",")
-  .map((o) => o.trim())
-  .filter(Boolean);
+// const allowedOrigins = ALLOWED_ORIGINS.split(",")
+//   .map((o) => o.trim())
+//   .filter(Boolean);
 
 const app = express();
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Permite peticiones sin origin (como Postman, curl, apps móviles)
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      // Verifica si el origin está en la lista permitida
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error(`Origin ${origin} no permitido por CORS`));
-      }
-    },
-    //origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
+    origin: ALLOWED_ORIGINS.split(",")
+      .map((o) => o.trim())
+      .filter(Boolean),
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
-app.options("*", cors());
+app.options("/api/users", cors());
 
 app.use((err, req, res, next) => {
   if (err && err.message === "CORS_NOT_ALLOWED") {
