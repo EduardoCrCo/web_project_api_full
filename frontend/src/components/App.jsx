@@ -58,7 +58,8 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
-    if (token) {
+    if (token) return;
+    {
       fetch("https://api.web-project-around.ignorelist.com/users/me", {
         method: "GET",
         headers: {
