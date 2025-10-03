@@ -60,7 +60,7 @@ function App() {
     const token = localStorage.getItem("jwt");
     if (token) {
       fetch("https://api.web-project-around.ignorelist.com/users/me", {
-        method: "POST",
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
