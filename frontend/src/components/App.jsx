@@ -1,10 +1,4 @@
-import Header from "./Header/Header.jsx";
-import Footer from "./Footer/Footer.jsx";
-import Main from "./Main/Main.jsx";
-import { useState } from "react";
-import CurrentUserContext from "../contexts/CurrentUserContext.js";
-import api from "../utils/api.js";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -12,10 +6,17 @@ import {
   Navigate,
   useNavigate,
 } from "react-router-dom";
+
+import CurrentUserContext from "../contexts/CurrentUserContext.js";
+import * as auth from "../utils/auth.js";
+import api from "../utils/api.js";
+
+import Header from "./Header/Header.jsx";
+import Footer from "./Footer/Footer.jsx";
+import Main from "./Main/Main.jsx";
 import Login from "./Login/Login.jsx";
 import Register from "./Register/Register.jsx";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute.jsx";
-import * as auth from "../utils/auth.js";
 import InfoTooltip from "./InfoTooltip/InfoTooltip.jsx";
 
 function App() {
@@ -71,18 +72,25 @@ function App() {
         .then((data) => {
           setIsLoggedIn(true);
           setEmail(data.data.email);
-          navigate("/");
+          //navigate("/");
         })
         .catch((err) => {
           console.error("Token validation error:", err);
         });
     }
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
-    api.getUserInfo().then((user) => {
-      setCurrentUser(user);
-    });
+    if (!isLoggedIn) {
+      api
+        .getUserInfo()
+        .then((user) => {
+          setCurrentUser(user.data);
+        })
+        .catch((err) => {
+          console.error("Error fetching user info:", err);
+        });
+    }
   }, [isLoggedIn]);
 
   const handleUpdateUser = (data) => {
@@ -107,26 +115,27 @@ function App() {
     navigate("/login");
   };
 
-  const handleLogin = () => {
-    const token = localStorage.getItem("jwt");
-
+  const handleLogin = (email, password) => {
     fetch("https://api.web-project-around.ignorelist.com/signin", {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({ email: email, password: password }),
     })
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((data) => {
-        setEmail(data.data.email);
-        setIsLoggedIn(true);
+        if (data.token) {
+          localStorage.setItem("jwt", data.token);
+          setEmail(data.email);
+          setIsLoggedIn(true);
+          navigate("/");
+        }
       })
       .catch((error) => {
         console.error("Error en el login:", error);
         setIsLoggedIn(false);
-
-        alert("Usuario no encontrado o no registrado");
+        showErrorTooltip("Usuario no encontrado o no registrado");
       });
   };
 

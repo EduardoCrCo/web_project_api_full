@@ -11,7 +11,7 @@ import authRouter from "./routes/auth.js";
 import auth from "./middlewares/auth.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { requestLogger, errorLogger } from "./middlewares/logger.js";
-
+const app = express();
 dotenv.config();
 
 const {
@@ -31,51 +31,40 @@ mongoose
     process.exit(1);
   });
 
-const app = express();
-
-const allowedOrigins = new Set(
-  ALLOWED_ORIGINS.split(",")
-    .map((o) => o.trim())
-    .filter(Boolean)
-);
-
-// app.use(
-//   cors({
-//     origin: (origin, cb) => {
-//       if (!origin) {
-//         console.log("[CORS] allow (no origin header)");
-//         return cb(null, true);
-//       }
-//       if (allowedOrigins.has(origin)) {
-//         console.log(`[CORS] allow ${origin}`);
-//         return cb(null, true);
-//       }
-//       console.warn(`[CORS] block ${origin}`);
-//       return cb(new Error("CORS_NOT_ALLOWED"));
-//     },
-//     credentials: true,
-//   })
-// );
-// app.use(cors());
+const allowedOrigins = ALLOWED_ORIGINS.split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
 
 app.use(
   cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: (origin, callback) => {
+      // Permite peticiones sin origin (como Postman, curl, apps móviles)
+      if (!origin) {
+        return callback(null, true);
+      }
 
-    // credentials: true,
+      // Verifica si el origin está en la lista permitida
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} no permitido por CORS`));
+      }
+    },
+    //origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false,
   })
 );
 
-app.options("*", cors());
+// app.options("*", cors());
 
-// app.use((err, req, res, next) => {
-//   if (err && err.message === "CORS_NOT_ALLOWED") {
-//     return res.status(403).json({ message: "Origin not allowed by CORS" });
-//   }
-//   return next(err);
-// });
+app.use((err, req, res, next) => {
+  if (err && err.message === "CORS_NOT_ALLOWED") {
+    return res.status(403).json({ message: "Origin not allowed by CORS" });
+  }
+  return next(err);
+});
 
 // app.use(helmet());
 
@@ -97,16 +86,11 @@ app.options("*", cors());
 // app.use(globalLimiter);
 
 app.use(requestLogger);
-app.use(
-  express.json({
-    /* limit: "16kb", */
-  })
-);
-
+app.use(express.json({}));
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/signin" /* authLimiter */);
-app.use("/signup" /* authLimiter */);
+//app.post("/signin", );
+//app.post("/signup", );
 
 app.use(authRouter);
 app.use(auth);
@@ -123,6 +107,6 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port  0.0.0.0:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
