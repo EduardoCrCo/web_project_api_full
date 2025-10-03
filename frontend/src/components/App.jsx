@@ -81,7 +81,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (isLoggedIn) {
       api
         .getUserInfo()
         .then((user) => {
