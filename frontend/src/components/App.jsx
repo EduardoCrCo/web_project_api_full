@@ -117,7 +117,7 @@ function App() {
 
   const handleLogin = (email, password) => {
     fetch("https://api.web-project-around.ignorelist.com/signin", {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },

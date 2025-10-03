@@ -1,7 +1,7 @@
 class Api {
   constructor(url, token) {
     this._url = url;
-    // this._token = token;
+    this._token = token;
   }
   getUserInfo() {
     return this._makeRequest("users/me");
@@ -44,10 +44,10 @@ class Api {
       method,
       headers: {
         "Content-Type": "application/json",
-        // Authorization: this._token,
+        Authorization: this._token,
       },
     };
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("jwt");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -67,9 +67,7 @@ class Api {
 
 const api = new Api(
   "https://api.web-project-around.ignorelist.com/",
-  localStorage.getItem("token")
-    ? `Bearer ${localStorage.getItem("token")}`
-    : null
+  localStorage.getItem("jwt") ? `Bearer ${localStorage.getItem("jwt")}` : null
 );
 
 export default api;
