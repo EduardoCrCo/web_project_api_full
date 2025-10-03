@@ -131,7 +131,7 @@ function App() {
       .then((data) => {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
-          setEmail(data.email);
+          setEmail(data.data.email);
           setIsLoggedIn(true);
           navigate("/");
         }

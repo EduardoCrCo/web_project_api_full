@@ -11,7 +11,7 @@ import authRouter from "./routes/auth.js";
 import auth from "./middlewares/auth.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { requestLogger, errorLogger } from "./middlewares/logger.js";
-const app = express();
+
 dotenv.config();
 
 const {
@@ -34,6 +34,8 @@ mongoose
 const allowedOrigins = ALLOWED_ORIGINS.split(",")
   .map((o) => o.trim())
   .filter(Boolean);
+
+const app = express();
 
 app.use(
   cors({
