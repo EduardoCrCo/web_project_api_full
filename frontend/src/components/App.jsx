@@ -60,7 +60,7 @@ function App() {
     const token = localStorage.getItem("jwt");
     if (token) {
       fetch("https://api.web-project-around.ignorelist.com/users/me", {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -117,9 +117,10 @@ function App() {
 
   const handleLogin = (email, password) => {
     fetch("https://api.web-project-around.ignorelist.com/signin", {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
       },
       body: JSON.stringify({ email: email, password: password }),
     })
@@ -127,7 +128,7 @@ function App() {
       .then((data) => {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
-          setEmail(data.email);
+          setEmail(data.data.email);
           setIsLoggedIn(true);
           navigate("/");
         }
