@@ -72,10 +72,13 @@ function App() {
         .then((data) => {
           setIsLoggedIn(true);
           setEmail(data.data.email);
-          navigate("/");
+          //navigate("/");
         })
         .catch((err) => {
           console.error("Token validation error:", err);
+          setIsLoggedIn(false);
+          localStorage.removeItem("jwt");
+          navigate("/login");
         });
     }
   }, []);
