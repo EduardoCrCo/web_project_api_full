@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import cors from "cors";
+//import cors from "cors";
 import { errors } from "celebrate";
 import dotenv from "dotenv";
 import cardsRouter from "./routes/cards.js";
@@ -14,9 +14,9 @@ import { whitelist } from "validator";
 dotenv.config();
 
 const {
-  PORT = 3000,
+  //PORT = 3000,
   MONGO_URL = "mongodb://127.0.0.1:27017/aroundb",
-  ALLOWED_ORIGINS = "http://localhost:3000",
+  //ALLOWED_ORIGINS = "http://localhost:3000",
   NODE_ENV = "development",
 } = process.env;
 
@@ -32,22 +32,22 @@ mongoose
 
 const app = express();
 
-whitelist(ALLOWED_ORIGINS);
+// whitelist(ALLOWED_ORIGINS);
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://web-project-around.ignorelist.com",
-      "https://www.web-project-around.ignorelist.com",
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:3000",
+//       "https://web-project-around.ignorelist.com",
+//       "https://www.web-project-around.ignorelist.com",
+//     ],
+//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     credentials: true,
+//   })
+// );
 
-app.options("*", cors());
+//app.options("*", cors());
 
 // app.use((err, req, res, next) => {
 //   if (err && err.message === "CORS_NOT_ALLOWED") {
@@ -55,6 +55,43 @@ app.options("*", cors());
 //   }
 //   return next(err);
 // });
+
+const whitelist = [
+  "http://localhost:3000",
+  "https://web-project-around.ignorelist.com",
+  "https://www.web-project-around.ignorelist.com",
+  "https://api.web-project-around.ignorelist.com",
+];
+
+// 🎯 Opciones de configuración para CORS
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Permitir peticiones sin origen (como curl o Postman)
+    if (!origin || whitelist.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("No permitido por CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, // si usas cookies o tokens
+  optionsSuccessStatus: 200,
+};
+
+// 🧩 Middleware global de CORS
+app.use(cors(corsOptions));
+
+// 🔁 Soporte para preflight (OPTIONS) en todas las rutas
+app.options("*", cors(corsOptions));
+
+// 🧱 Middleware para parsear JSON
+app.use(express.json());
+
+// 📌 Tus rutas van aquí
+app.get("/api/ejemplo", (req, res) => {
+  res.json({ mensaje: "CORS configurado correctamente" });
+});
 
 app.use(requestLogger);
 app.use(express.json({}));
@@ -75,6 +112,7 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
