@@ -21,9 +21,9 @@ const Login = ({ onLogin, showErrorTooltip }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    authorize(data.email, data.password)
-      .then((data) => {
-        localStorage.setItem("jwt", data.token);
+    authorize(email, password)
+      .then((token) => {
+        localStorage.setItem("jwt", token);
         onLogin();
         navigate("/");
       })
