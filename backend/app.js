@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-//import cors from "cors";
+import cors from "cors";
 import { errors } from "celebrate";
 import dotenv from "dotenv";
 import cardsRouter from "./routes/cards.js";
