@@ -21,10 +21,10 @@ const Login = ({ onLogin, showErrorTooltip }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    authorize(email, password)
+    authorize(data.email, data.password)
       .then((token) => {
         localStorage.setItem("jwt", token);
-        onLogin();
+        //onLogin();
         navigate("/");
       })
       .catch(() => {
