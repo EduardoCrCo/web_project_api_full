@@ -9,7 +9,7 @@ import authRouter from "./routes/auth.js";
 import auth from "./middlewares/auth.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { requestLogger, errorLogger } from "./middlewares/logger.js";
-import { whitelist } from "validator";
+//import { whitelist } from "validator";
 
 dotenv.config();
 
