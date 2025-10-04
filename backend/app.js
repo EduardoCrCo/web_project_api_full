@@ -92,14 +92,24 @@ const app = express();
 // app.get("/api/ejemplo", (req, res) => {
 //   res.json({ mensaje: "CORS configurado correctamente" });
 // });
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://web-project-around.ignorelist.com",
+  "https://www.web-project-around.ignorelist.com",
+  "https://api.web-project-around.ignorelist.com",
+];
 
 app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
   // Set the Access-Control-Allow-Origin header
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://web-project-around.ignorelist.com"
-  );
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  // res.setHeader(
+  //   "Access-Control-Allow-Origin",
+  //   "https://web-project-around.ignorelist.com"
+  // );
+  //res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   // Optionally set other CORS headers like Access-Control-Allow-Methods and Access-Control-Allow-Headers
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
