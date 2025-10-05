@@ -74,7 +74,7 @@ function App() {
         .getUserInfo()
         .then((data) => {
           setIsLoggedIn(true);
-          setEmail(data.data.email);
+          setEmail(data.email);
           navigate("/");
         })
         .catch((err) => {
