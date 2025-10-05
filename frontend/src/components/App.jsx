@@ -36,7 +36,6 @@ function App() {
         setInfoTooltipMessage("¡Correcto! Ya estás registrado.");
         setIsTooltipSuccess(true);
         setIsInfoTooltipOpen(true);
-        navigate("/login");
       })
       .catch(() => {
         setInfoTooltipMessage(
@@ -44,6 +43,30 @@ function App() {
         );
         setIsTooltipSuccess(false);
         setIsInfoTooltipOpen(true);
+      });
+  };
+
+  const handleLogin = (email, password) => {
+    auth
+      .register(email, password)
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem("jwt", data.token);
+          setEmail(data.data.email);
+          setIsLoggedIn(true);
+
+          return api.getUserInfo(data.token);
+        }
+      })
+      .then((user) => {
+        setCurrentUser(user);
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Error en el login:", error);
+        setIsLoggedIn(false);
+        showErrorTooltip("Usuario no encontrado o no registrado");
+        localStorage.removeItem("jwt");
       });
   };
 
@@ -59,22 +82,12 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("jwt");
     if (token) {
-      // fetch("https://api.web-project-around.ignorelist.com/users/me", {
-      //   method: "GET",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // })
-
-      //  .then((res) =>
-      //  res.ok ? res.json() : Promise.reject(`Error: ${res.status}`)
-      //)
       api
-        .getUserInfo()
+        .getUserInfo(token)
         .then((data) => {
-          setIsLoggedIn(true);
+          setCurrentUser(data);
           setEmail(data.email);
+          setIsLoggedIn(true);
           navigate("/");
         })
         .catch((err) => {
@@ -86,71 +99,45 @@ function App() {
     }
   }, []);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      api
-        .getUserInfo()
-        .then((user) => {
-          setCurrentUser(user);
+  const handleUpdateUser = (data) => {
+    const token = localStorage.getItem("jwt");
+    (async () => {
+      await api
+        .updateUser(data.name, data.about, token)
+        .then((newData) => {
+          setCurrentUser(newData);
+          handlePopupClose();
         })
         .catch((err) => {
-          console.error("Error fetching user info:", err);
+          console.error("Error updating user info:", err);
         });
-    }
-  }, [isLoggedIn]);
-
-  const handleUpdateUser = (data) => {
-    (async () => {
-      await api.updateUser(data.name, data.about).then((newData) => {
-        setCurrentUser(newData);
-        handlePopupClose();
-      });
     })();
   };
 
   const handleUpdateAvatar = (avatar) => {
-    api.updateAvatar(avatar).then((user) => {
-      setCurrentUser(user);
-      handlePopupClose();
-    });
+    const token = localStorage.getItem("jwt");
+    api
+      .updateAvatar(avatar, token)
+      .then((user) => {
+        setCurrentUser(user);
+        handlePopupClose();
+      })
+      .catch((err) => {
+        console.error("Error updating avatar:", err);
+      });
   };
 
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     setIsLoggedIn(false);
+    setCurrentUser({});
+    setEmail(null);
     navigate("/login");
-  };
-
-  const handleLogin = (email, password) => {
-    fetch("https://api.web-project-around.ignorelist.com/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        //Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-      body: JSON.stringify({ email: email, password: password }),
-    })
-      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem("jwt", data.token);
-          setEmail(data.data.email);
-          setIsLoggedIn(true);
-          navigate("/");
-        }
-      })
-      .catch((error) => {
-        console.error("Error en el login:", error);
-        setIsLoggedIn(false);
-        showErrorTooltip("Usuario no encontrado o no registrado");
-        localStorage.removeItem("jwt");
-        navigate("/login");
-      });
   };
 
   const showErrorTooltip = (message) => {
     setInfoTooltipMessage(message);
-    setIsTooltipSuccess(false); // Es un error
+    setIsTooltipSuccess(false);
     setIsInfoTooltipOpen(true);
   };
 
