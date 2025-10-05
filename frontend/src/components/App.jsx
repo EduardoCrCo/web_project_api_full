@@ -59,16 +59,19 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("jwt");
     if (token) {
-      fetch("https://api.web-project-around.ignorelist.com/users/me", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((res) =>
-          res.ok ? res.json() : Promise.reject(`Error: ${res.status}`)
-        )
+      // fetch("https://api.web-project-around.ignorelist.com/users/me", {
+      //   method: "GET",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // })
+
+      //  .then((res) =>
+      //  res.ok ? res.json() : Promise.reject(`Error: ${res.status}`)
+      //)
+      api
+        .getUserInfo()
         .then((data) => {
           setIsLoggedIn(true);
           setEmail(data.data.email);
