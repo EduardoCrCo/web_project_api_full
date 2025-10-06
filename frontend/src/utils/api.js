@@ -63,8 +63,8 @@ class Api {
     const token = this._getToken();
     if (token) {
       config.headers.Authorization = token;
-    } else {
-      return Promise.reject(new Error("Authentication token is missing."));
+      // } else {
+      //   return Promise.reject(new Error("Authentication token is missing."));
     }
 
     if (method !== "GET" && method !== "DELETE") {
