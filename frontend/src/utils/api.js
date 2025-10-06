@@ -45,7 +45,7 @@ class Api {
     return Promise.all([this.getUserInfo(), this.getCards()]);
   }
 
-  _makeRequest(path, method = "GET", body = {}) {
+  _makeRequest(path, method = "GET", body = null) {
     // if (!this._token) {
     //   // true (undefined)
     //   return Promise.reject(new Error("Authentication token is missing."));

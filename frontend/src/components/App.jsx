@@ -28,6 +28,7 @@ function App() {
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [isTooltipSuccess, setIsTooltipSuccess] = useState(true);
   const [email, setEmail] = useState(null);
+  //const [token, setToken] = useState(null);
 
   const handleRegistration = (email, password) => {
     auth
@@ -60,6 +61,7 @@ function App() {
       })
       .then((user) => {
         setCurrentUser(user);
+
         navigate("/");
       })
       .catch((error) => {
@@ -85,7 +87,7 @@ function App() {
     const token = localStorage.getItem("jwt");
     if (token) {
       api
-        .getUserInfo(token) // ✅ Lee token automáticamente
+        .getUserInfo() // ✅ Lee token automáticamente
         .then((data) => {
           setCurrentUser(data);
           setEmail(data.email);
