@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 
 import CurrentUserContext from "../contexts/CurrentUserContext.js";
 import * as auth from "../utils/auth.js";
@@ -31,8 +37,7 @@ function App() {
         setIsTooltipSuccess(true);
         setIsInfoTooltipOpen(true);
       })
-      .catch((err) => {
-        console.error("Error en registro:", err);
+      .catch(() => {
         setInfoTooltipMessage(
           "¡Ups! Algo salió mal. Por favor, inténtalo de nuevo."
         );
@@ -42,48 +47,34 @@ function App() {
   };
 
   const handleLogin = (email, password) => {
-    console.log("🔐 Iniciando login para:", email);
-
     auth
       .authorize(email, password)
       .then((data) => {
-        console.log("✅ Respuesta del servidor:", data);
-
         if (data.token) {
-          console.log("💾 Guardando token...");
           localStorage.setItem("jwt", data.token);
           setEmail(email);
           setIsLoggedIn(true);
 
-          console.log("👤 Obteniendo datos del usuario...");
-          return api.getUserInfo();
-        } else {
-          throw new Error("No se recibió token del servidor");
+          return api.getUserInfo(); // ✅ Leer datos del usuario
         }
       })
       .then((user) => {
-        console.log("✅ Usuario obtenido:", user);
         setCurrentUser(user);
-        setIsInfoTooltipOpen(false);
+
         navigate("/");
       })
       .catch((error) => {
-        console.error("❌ Error en el login:", error);
+        console.error("Error en el login:", error);
         setIsLoggedIn(false);
-        setCurrentUser({});
-        setEmail(null);
+        showErrorTooltip("Usuario no encontrado o no registrado");
         localStorage.removeItem("jwt");
-
-        showErrorTooltip(
-          error.message || "Usuario no encontrado o contraseña incorrecta"
-        );
       });
   };
 
   const handleTooltipClose = () => {
     setIsInfoTooltipOpen(false);
     if (isTooltipSuccess) {
-      navigate("/login");
+      navigate("/login"); // Redirige cuando el usuario cierra el modal
     }
   };
 
@@ -93,38 +84,27 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
-
     if (token) {
-      console.log("🔍 Token encontrado, validando...");
-
       api
-        .getUserInfo()
+        .getUserInfo() // ✅ Lee token automáticamente
         .then((data) => {
-          console.log("✅ Token válido, usuario cargado:", data);
           setCurrentUser(data);
           setEmail(data.email);
-          setIsLoggedIn(true);
-          // ✅ NO navegar aquí - causa loop infinito
+          setIsLoggedIn(true); //navigate("/");
         })
         .catch((err) => {
-          console.error("❌ Token inválido o expirado:", err.message);
+          console.error("Token validation error:", err);
           setIsLoggedIn(false);
-          setCurrentUser({});
-          setEmail(null);
           localStorage.removeItem("jwt");
-
-          // Solo redirigir si no estamos en login/register
-          const currentPath = window.location.pathname;
-          if (currentPath !== "/login" && currentPath !== "/register") {
-            navigate("/login");
-          }
+          navigate("/login");
         });
-    } else {
-      console.log("ℹ️ No hay token - usuario no autenticado");
     }
   }, [navigate]);
 
   const handleUpdateUser = (data) => {
+    // const token = localStorage.getItem("jwt");
+    // (async () => {
+    //   await
     api
       .updateUser(data.name, data.about)
       .then((newData) => {
@@ -133,10 +113,11 @@ function App() {
       })
       .catch((err) => {
         console.error("Error updating user info:", err);
-      });
+      }); //})();
   };
 
   const handleUpdateAvatar = (avatar) => {
+    // const token = localStorage.getItem("jwt");
     api
       .updateAvatar(avatar)
       .then((user) => {
@@ -149,7 +130,6 @@ function App() {
   };
 
   const handleLogout = () => {
-    console.log("👋 Cerrando sesión...");
     localStorage.removeItem("jwt");
     setIsLoggedIn(false);
     setCurrentUser({});
