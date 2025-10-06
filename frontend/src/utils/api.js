@@ -45,18 +45,12 @@ class Api {
     return Promise.all([this.getUserInfo(), this.getCards()]);
   }
 
-  _makeRequest(path, method = "GET", body = null) {
-    // if (!this._token) {
-    //   // true (undefined)
-    //   return Promise.reject(new Error("Authentication token is missing."));
-    //   // Todas las peticiones fallan
-    // }
-
+  _makeRequest(path, method = "GET", body = {}) {
     const config = {
       method,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${this._getToken()}`,
+        //Authorization: `Bearer ${this._getToken()}`,
       },
     };
 

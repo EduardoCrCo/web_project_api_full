@@ -1,11 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  //BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-  useNavigate,
-} from "react-router-dom";
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 
 import CurrentUserContext from "../contexts/CurrentUserContext.js";
 import * as auth from "../utils/auth.js";
@@ -28,7 +22,6 @@ function App() {
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [isTooltipSuccess, setIsTooltipSuccess] = useState(true);
   const [email, setEmail] = useState(null);
-  //const [token, setToken] = useState(null);
 
   const handleRegistration = (email, password) => {
     auth
@@ -38,7 +31,8 @@ function App() {
         setIsTooltipSuccess(true);
         setIsInfoTooltipOpen(true);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("Error en registro:", err);
         setInfoTooltipMessage(
           "¡Ups! Algo salió mal. Por favor, inténtalo de nuevo."
         );
@@ -48,34 +42,48 @@ function App() {
   };
 
   const handleLogin = (email, password) => {
+    console.log("🔐 Iniciando login para:", email);
+
     auth
       .authorize(email, password)
       .then((data) => {
+        console.log("✅ Respuesta del servidor:", data);
+
         if (data.token) {
+          console.log("💾 Guardando token...");
           localStorage.setItem("jwt", data.token);
           setEmail(email);
           setIsLoggedIn(true);
 
-          return api.getUserInfo(); // ✅ Leer datos del usuario
+          console.log("👤 Obteniendo datos del usuario...");
+          return api.getUserInfo();
+        } else {
+          throw new Error("No se recibió token del servidor");
         }
       })
       .then((user) => {
+        console.log("✅ Usuario obtenido:", user);
         setCurrentUser(user);
-
+        setIsInfoTooltipOpen(false);
         navigate("/");
       })
       .catch((error) => {
-        console.error("Error en el login:", error);
+        console.error("❌ Error en el login:", error);
         setIsLoggedIn(false);
-        showErrorTooltip("Usuario no encontrado o no registrado");
+        setCurrentUser({});
+        setEmail(null);
         localStorage.removeItem("jwt");
+
+        showErrorTooltip(
+          error.message || "Usuario no encontrado o contraseña incorrecta"
+        );
       });
   };
 
   const handleTooltipClose = () => {
     setIsInfoTooltipOpen(false);
     if (isTooltipSuccess) {
-      navigate("/login"); // Redirige cuando el usuario cierra el modal
+      navigate("/login");
     }
   };
 
@@ -85,28 +93,38 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
+
     if (token) {
+      console.log("🔍 Token encontrado, validando...");
+
       api
-        .getUserInfo() // ✅ Lee token automáticamente
+        .getUserInfo()
         .then((data) => {
+          console.log("✅ Token válido, usuario cargado:", data);
           setCurrentUser(data);
           setEmail(data.email);
           setIsLoggedIn(true);
-          navigate("/");
+          // ✅ NO navegar aquí - causa loop infinito
         })
         .catch((err) => {
-          console.error("Token validation error:", err);
+          console.error("❌ Token inválido o expirado:", err.message);
           setIsLoggedIn(false);
+          setCurrentUser({});
+          setEmail(null);
           localStorage.removeItem("jwt");
-          navigate("/login");
+
+          // Solo redirigir si no estamos en login/register
+          const currentPath = window.location.pathname;
+          if (currentPath !== "/login" && currentPath !== "/register") {
+            navigate("/login");
+          }
         });
+    } else {
+      console.log("ℹ️ No hay token - usuario no autenticado");
     }
   }, [navigate]);
 
   const handleUpdateUser = (data) => {
-    // const token = localStorage.getItem("jwt");
-    // (async () => {
-    //   await
     api
       .updateUser(data.name, data.about)
       .then((newData) => {
@@ -116,11 +134,9 @@ function App() {
       .catch((err) => {
         console.error("Error updating user info:", err);
       });
-    //})();
   };
 
   const handleUpdateAvatar = (avatar) => {
-    // const token = localStorage.getItem("jwt");
     api
       .updateAvatar(avatar)
       .then((user) => {
@@ -133,6 +149,7 @@ function App() {
   };
 
   const handleLogout = () => {
+    console.log("👋 Cerrando sesión...");
     localStorage.removeItem("jwt");
     setIsLoggedIn(false);
     setCurrentUser({});
