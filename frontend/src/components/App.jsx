@@ -92,7 +92,7 @@ function App() {
           setCurrentUser(data);
           setEmail(data.email);
           setIsLoggedIn(true);
-          //navigate("/");
+          navigate("/");
         })
         .catch((err) => {
           console.error("Token validation error:", err);
