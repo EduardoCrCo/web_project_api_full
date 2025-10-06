@@ -9,7 +9,7 @@ const Login = ({ onLogin, showErrorTooltip }) => {
     password: "",
   });
 
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,18 +21,20 @@ const Login = ({ onLogin, showErrorTooltip }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    authorize(data.email, data.password)
-      .then((token) => {
-        localStorage.setItem("jwt", token);
-        //onLogin();
-        navigate("/");
-      })
-      .catch(() => {
-        showErrorTooltip(
-          "¡Ups! Algo salió mal. Por favor, inténtalo de nuevo."
-        );
-      });
+    // authorize(data.email, data.password)
+    //   .then((response) => {
+    //     if (response.token) {
+    //       localStorage.setItem("jwt", response.token);
+    onLogin(data.email, data.password);
+    //      navigate("/");
   };
+  //    })
+  //     .catch(() => {
+  //       showErrorTooltip(
+  //         "¡Ups! Algo salió mal. Por favor, inténtalo de nuevo."
+  //       );
+  //     });
+  // };
 
   return (
     <div className="login-container">

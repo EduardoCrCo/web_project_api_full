@@ -16,50 +16,89 @@ import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 export default function Main({ popupType, setPopupType, handlePopupClose }) {
   const [cards, setCards] = useState([]);
   const [cardToDelete, setCardToDelete] = useState(null);
-
-  useEffect(() => {
-    api.getCards().then((newCards) => {
-      setCards(newCards);
-    });
-  }, []);
-
-  const handleAddPlaceSubmit = ({ name, link }) => {
-    api.addCard(name, link).then((card) => {
-      setCards([card, ...cards]);
-      handlePopupClose();
-    });
-  };
-
-  const handleLike = (cardId, isLiked) => {
-    if (isLiked) {
-      api.deleteLikeCard(cardId).then((card) => {
-        setCards((state) =>
-          state.map((currentCard) =>
-            currentCard._id === card._id ? card : currentCard
-          )
-        );
-      });
-    } else {
-      api.likeCard(cardId).then((card) => {
-        setCards((state) =>
-          state.map((currentCard) =>
-            currentCard._id === card._id ? card : currentCard
-          )
-        );
-      });
-    }
-  };
-
-  const handleDeleteCard = (cardId) => {
-    api.deleteCard(cardId).then(() => {
-      setCards((state) => state.filter((card) => card._id !== cardId));
-      setCardToDelete(null);
-    });
-  };
+  const [selectedCard, setSelectedCard] = useState(null);
 
   const userContext = useContext(CurrentUserContext);
   const { currentUser } = userContext;
-  const [selectedCard, setSelectedCard] = useState(null);
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    api
+      .getCards()
+      .then((newCards) => {
+        setCards(newCards);
+      })
+      .catch((err) => {
+        console.error("Error loading cards:", err);
+      });
+  }, []);
+
+  const handleAddPlaceSubmit = ({ name, link }) => {
+    api
+      .addCard(name, link)
+      .then((card) => {
+        setCards([card, ...cards]);
+        handlePopupClose();
+      })
+      .catch((err) => {
+        console.error("Error adding card:", err);
+      });
+  };
+
+  // const handleLike = (cardId, isLiked) => {
+  //   if (isLiked) {
+  //     api.deleteLikeCard(cardId).then((card) => {
+  //       setCards((state) =>
+  //         state.map((currentCard) =>
+  //           currentCard._id === card._id ? card : currentCard
+  //         )
+  //       );
+  //     });
+  //   } else {
+  //     api.likeCard(cardId).then((card) => {
+  //       setCards((state) =>
+  //         state.map((currentCard) =>
+  //           currentCard._id === card._id ? card : currentCard
+  //         )
+  //       );
+  //     });
+  //   }
+  // };
+
+  const handleLike = (cardId, isLiked) => {
+    const request = isLiked ? api.deleteLikeCard(cardId) : api.likeCard(cardId);
+
+    request
+      .then((updatedCard) => {
+        setCards((state) =>
+          state.map((currentCard) =>
+            currentCard._id === updatedCard._id ? updatedCard : currentCard
+          )
+        );
+      })
+      .catch((err) => {
+        console.error("Error toggling like:", err);
+      });
+  };
+
+  // const handleDeleteCard = (cardId) => {
+  //   api.deleteCard(cardId).then(() => {
+  //     setCards((state) => state.filter((card) => card._id !== cardId));
+  //     setCardToDelete(null);
+  //   });
+  // };
+  const handleDeleteCard = (cardId) => {
+    api
+      .deleteCard(cardId)
+      .then(() => {
+        setCards((state) => state.filter((card) => card._id !== cardId));
+        setCardToDelete(null);
+        handlePopupClose();
+      })
+      .catch((err) => {
+        console.error("Error deleting card:", err);
+      });
+  };
 
   const avatarPopupTypes = {
     children: <EditAvatar />,
@@ -127,20 +166,26 @@ export default function Main({ popupType, setPopupType, handlePopupClose }) {
 
         <section className="elements">
           <div className="grid">
-            {cards.map((card) => (
-              <Card
-                key={card._id}
-                handleLike={handleLike}
-                onConfirmDelete={(_id) => setCardToDelete(_id)}
-                onCardClick={() => {
-                  setSelectedCard(card);
-                }}
-                name={card.name}
-                link={card.link}
-                isLiked={card.isLiked}
-                _id={card._id}
-              />
-            ))}
+            {cards.map((card) => {
+              const isLiked = card.likes?.some(
+                (userId) => userId === userContext.currentUser._id
+              );
+
+              return (
+                <Card
+                  key={card._id}
+                  handleLike={handleLike}
+                  onConfirmDelete={(_id) => setCardToDelete(_id)}
+                  onCardClick={() => {
+                    setSelectedCard(card);
+                  }}
+                  name={card.name}
+                  link={card.link}
+                  isLiked={isLiked}
+                  _id={card._id}
+                />
+              );
+            })}
           </div>
         </section>
       </main>

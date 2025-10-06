@@ -48,14 +48,14 @@ function App() {
 
   const handleLogin = (email, password) => {
     auth
-      .register(email, password)
+      .authorize(email, password)
       .then((data) => {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
-          setEmail(data.data.email);
+          setEmail(email);
           setIsLoggedIn(true);
 
-          return api.getUserInfo(data.token);
+          return api.getUserInfo();
         }
       })
       .then((user) => {
@@ -72,7 +72,9 @@ function App() {
 
   const handleTooltipClose = () => {
     setIsInfoTooltipOpen(false);
-    navigate("/login"); // Redirige cuando el usuario cierra el modal
+    if (isTooltipSuccess) {
+      navigate("/login"); // Redirige cuando el usuario cierra el modal
+    }
   };
 
   const handlePopupClose = () => {

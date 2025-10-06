@@ -1,8 +1,14 @@
 class Api {
   constructor(url, token) {
     this._url = url;
-    this._token = token;
+    //this._token = token;
   }
+
+  _getToken() {
+    const token = localStorage.getItem("jwt");
+    return token ? `Bearer ${token}` : null;
+  }
+
   getUserInfo() {
     return this._makeRequest("users/me");
   }
@@ -40,13 +46,26 @@ class Api {
   }
 
   _makeRequest(path, method = "GET", body = {}) {
+    // if (!this._token) {
+    //   // true (undefined)
+    //   return Promise.reject(new Error("Authentication token is missing."));
+    //   // Todas las peticiones fallan
+    // }
+
     const config = {
       method,
       headers: {
         "Content-Type": "application/json",
-        Authorization: this._token,
+        //Authorization: this._token,
       },
     };
+
+    const token = this._getToken();
+    if (token) {
+      config.headers.Authorization = token;
+    } else {
+      return Promise.reject(new Error("Authentication token is missing."));
+    }
 
     if (method !== "GET" && method !== "DELETE") {
       config["body"] = JSON.stringify(body);
@@ -62,8 +81,8 @@ class Api {
 }
 
 const api = new Api(
-  "https://api.web-project-around.ignorelist.com/",
-  localStorage.getItem("jwt") ? `Bearer ${localStorage.getItem("jwt")}` : null
+  "https://api.web-project-around.ignorelist.com/"
+  //localStorage.getItem("jwt") ? `Bearer ${localStorage.getItem("jwt")}` : null
 );
 
 export default api;
