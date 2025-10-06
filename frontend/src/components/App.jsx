@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  BrowserRouter as Router,
+  //BrowserRouter as Router,
   Route,
   Routes,
   Navigate,
@@ -85,12 +85,12 @@ function App() {
     const token = localStorage.getItem("jwt");
     if (token) {
       api
-        .getUserInfo(token)
+        .getUserInfo() // ✅ Lee token automáticamente
         .then((data) => {
           setCurrentUser(data);
           setEmail(data.email);
           setIsLoggedIn(true);
-          navigate("/");
+          //navigate("/");
         })
         .catch((err) => {
           console.error("Token validation error:", err);
@@ -102,24 +102,25 @@ function App() {
   }, []);
 
   const handleUpdateUser = (data) => {
-    const token = localStorage.getItem("jwt");
-    (async () => {
-      await api
-        .updateUser(data.name, data.about, token)
-        .then((newData) => {
-          setCurrentUser(newData);
-          handlePopupClose();
-        })
-        .catch((err) => {
-          console.error("Error updating user info:", err);
-        });
-    })();
+    // const token = localStorage.getItem("jwt");
+    // (async () => {
+    //   await
+    api
+      .updateUser(data.name, data.about)
+      .then((newData) => {
+        setCurrentUser(newData);
+        handlePopupClose();
+      })
+      .catch((err) => {
+        console.error("Error updating user info:", err);
+      });
+    //})();
   };
 
   const handleUpdateAvatar = (avatar) => {
-    const token = localStorage.getItem("jwt");
+    // const token = localStorage.getItem("jwt");
     api
-      .updateAvatar(avatar, token)
+      .updateAvatar(avatar)
       .then((user) => {
         setCurrentUser(user);
         handlePopupClose();
