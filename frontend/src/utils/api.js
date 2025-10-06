@@ -1,5 +1,5 @@
 class Api {
-  constructor(url, token) {
+  constructor(url) {
     this._url = url;
     //this._token = token;
   }
@@ -56,7 +56,7 @@ class Api {
       method,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${this._getToken()}`,
+        //Authorization: `Bearer ${this._getToken()}`,
       },
     };
 
@@ -81,8 +81,8 @@ class Api {
 }
 
 const api = new Api(
-  "https://api.web-project-around.ignorelist.com/",
-  localStorage.getItem("jwt") ? `Bearer ${localStorage.getItem("jwt")}` : null
+  "https://api.web-project-around.ignorelist.com/"
+  //localStorage.getItem("jwt") ? `Bearer ${localStorage.getItem("jwt")}` : null
 );
 
 export default api;
