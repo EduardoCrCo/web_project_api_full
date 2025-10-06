@@ -85,7 +85,7 @@ function App() {
     const token = localStorage.getItem("jwt");
     if (token) {
       api
-        .getUserInfo() // ✅ Lee token automáticamente
+        .getUserInfo(token) // ✅ Lee token automáticamente
         .then((data) => {
           setCurrentUser(data);
           setEmail(data.email);
