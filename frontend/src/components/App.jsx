@@ -99,7 +99,7 @@ function App() {
           navigate("/login");
         });
     }
-  }, []);
+  }, [navigate]);
 
   const handleUpdateUser = (data) => {
     // const token = localStorage.getItem("jwt");

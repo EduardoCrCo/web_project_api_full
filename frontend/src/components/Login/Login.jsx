@@ -1,9 +1,9 @@
 import { useState } from "react";
 import "../../../src/blocks/login.css";
 import { Link, useNavigate } from "react-router-dom";
-import { authorize } from "../../utils/auth.js";
+//import { authorize } from "../../utils/auth.js";
 
-const Login = ({ onLogin, showErrorTooltip }) => {
+const Login = ({ onLogin }) => {
   const [data, setData] = useState({
     email: "",
     password: "",
