@@ -9,6 +9,7 @@ import authRouter from "./routes/auth.js";
 import auth from "./middlewares/auth.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { requestLogger, errorLogger } from "./middlewares/logger.js";
+//import { whitelist } from "validator";
 
 dotenv.config();
 
@@ -55,78 +56,79 @@ const app = express();
 //   return next(err);
 // });
 
-const whitelist = [
-  "http://localhost:3000",
-  "https://web-project-around.ignorelist.com",
-  "https://www.web-project-around.ignorelist.com",
-  "https://api.web-project-around.ignorelist.com",
-];
-
-// 🎯 Opciones de configuración para CORS
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Permitir peticiones sin origen (como curl o Postman)
-    if (!origin || whitelist.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("No permitido por CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true, // si usas cookies o tokens
-  optionsSuccessStatus: 200,
-};
-
-// 🧩 Middleware global de CORS
-app.use(cors(corsOptions));
-
-// 🔁 Soporte para preflight (OPTIONS) en todas las rutas
-app.options("*", cors(corsOptions));
-
-// 🧱 Middleware para parsear JSON
-app.use(express.json());
-
-// 📌 Tus rutas van aquí
-app.get("/api/ejemplo", (req, res) => {
-  res.json({ mensaje: "CORS configurado correctamente" });
-});
-
-// const allowedOrigins = [
+// const whitelist = [
 //   "http://localhost:3000",
 //   "https://web-project-around.ignorelist.com",
 //   "https://www.web-project-around.ignorelist.com",
 //   "https://api.web-project-around.ignorelist.com",
 // ];
 
-// app.use((req, res, next) => {
-//   const origin = req.headers.origin;
-//   if (allowedOrigins.includes(origin)) {
-//     res.setHeader("Access-Control-Allow-Origin", origin);
-//   }
-//   // Set the Access-Control-Allow-Origin header
-//   // res.setHeader(
-//   //   "Access-Control-Allow-Origin",
-//   //   "https://web-project-around.ignorelist.com"
-//   // );
-//   //res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-//   // Optionally set other CORS headers like Access-Control-Allow-Methods and Access-Control-Allow-Headers
-//   res.setHeader(
-//     "Access-Control-Allow-Methods",
-//     "GET, HEAD, OPTIONS, POST, PUT, PATCH, DELETE"
-//   );
-//   res.setHeader(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-//   );
+// // 🎯 Opciones de configuración para CORS
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     // Permitir peticiones sin origen (como curl o Postman)
+//     if (!origin || whitelist.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("No permitido por CORS"));
+//     }
+//   },
+//   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+//   allowedHeaders: ["Content-Type", "Authorization"],
+//   credentials: true, // si usas cookies o tokens
+//   optionsSuccessStatus: 200,
+// };
 
-//   // Handle preflight requests
-//   if (req.method === "OPTIONS") {
-//     return res.sendStatus(200).end();
-//   }
+// // 🧩 Middleware global de CORS
+// app.use(cors(corsOptions));
 
-//   next();
+// // 🔁 Soporte para preflight (OPTIONS) en todas las rutas
+// app.options("*", cors(corsOptions));
+
+// // 🧱 Middleware para parsear JSON
+// app.use(express.json());
+
+// // 📌 Tus rutas van aquí
+// app.get("/api/ejemplo", (req, res) => {
+//   res.json({ mensaje: "CORS configurado correctamente" });
 // });
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://web-project-around.ignorelist.com",
+  "https://www.web-project-around.ignorelist.com",
+  "https://api.web-project-around.ignorelist.com",
+];
+
+app.use(
+  cors((req, res, next) => {
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+    // Set the Access-Control-Allow-Origin header
+    // res.setHeader(
+    //   "Access-Control-Allow-Origin",
+    //   "https://web-project-around.ignorelist.com"
+    // );
+    //res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+    // Optionally set other CORS headers like Access-Control-Allow-Methods and Access-Control-Allow-Headers
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, HEAD, OPTIONS, POST, PUT, PATCH, DELETE"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    );
+
+    // Handle preflight requests
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(200).end();
+    }
+
+    next();
+  })
+);
 
 app.use(requestLogger);
 app.use(express.json({}));
