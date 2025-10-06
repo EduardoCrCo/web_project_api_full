@@ -5,12 +5,8 @@ class Api {
   }
 
   _getToken() {
-    // const token = localStorage.getItem("jwt");
-    // return token ? `Bearer ${token}` : null;
-
-    localStorage.getItem("jwt")
-      ? `Bearer ${localStorage.getItem("jwt")}`
-      : null;
+    const token = localStorage.getItem("jwt");
+    return token ? `Bearer ${token}` : null;
   }
 
   getUserInfo() {
