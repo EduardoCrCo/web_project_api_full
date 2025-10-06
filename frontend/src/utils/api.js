@@ -1,7 +1,7 @@
 class Api {
-  constructor(url) {
+  constructor(url, token) {
     this._url = url;
-    //this._token = token;
+    this._token = token;
   }
 
   _getToken() {
