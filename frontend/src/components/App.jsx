@@ -55,7 +55,7 @@ function App() {
           setEmail(email);
           setIsLoggedIn(true);
 
-          return api.getUserInfo();
+          return api.getUserInfo(data.token); // ✅ Leer datos del usuario
         }
       })
       .then((user) => {
