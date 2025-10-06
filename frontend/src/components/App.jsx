@@ -51,7 +51,7 @@ function App() {
       .authorize(email, password)
       .then((data) => {
         if (data.token) {
-          localStorage.setItem("jwt", data.token);
+          localStorage.setItem("jwt", response.token);
           setEmail(email);
           setIsLoggedIn(true);
 
