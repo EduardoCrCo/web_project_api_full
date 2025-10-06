@@ -99,36 +99,34 @@ const allowedOrigins = [
   "https://api.web-project-around.ignorelist.com",
 ];
 
-app.use(
-  cors((req, res, next) => {
-    const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
-      res.setHeader("Access-Control-Allow-Origin", origin);
-    }
-    // Set the Access-Control-Allow-Origin header
-    // res.setHeader(
-    //   "Access-Control-Allow-Origin",
-    //   "https://web-project-around.ignorelist.com"
-    // );
-    //res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-    // Optionally set other CORS headers like Access-Control-Allow-Methods and Access-Control-Allow-Headers
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET, HEAD, OPTIONS, POST, PUT, PATCH, DELETE"
-    );
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-    );
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  // Set the Access-Control-Allow-Origin header
+  // res.setHeader(
+  //   "Access-Control-Allow-Origin",
+  //   "https://web-project-around.ignorelist.com"
+  // );
+  //res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  // Optionally set other CORS headers like Access-Control-Allow-Methods and Access-Control-Allow-Headers
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, HEAD, OPTIONS, POST, PUT, PATCH, DELETE"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
 
-    // Handle preflight requests
-    if (req.method === "OPTIONS") {
-      return res.sendStatus(200).end();
-    }
+  // Handle preflight requests
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200).end();
+  }
 
-    next();
-  })
-);
+  next();
+});
 
 app.use(requestLogger);
 app.use(express.json({}));
