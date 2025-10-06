@@ -56,7 +56,7 @@ class Api {
       method,
       headers: {
         "Content-Type": "application/json",
-        //Authorization: `Bearer ${this._getToken()}`,
+        Authorization: `Bearer ${this._getToken()}`,
       },
     };
 
