@@ -1,29 +1,31 @@
-import CardModel from "../models/cards.js";
-import handleFailError from "../utils/handleErrors.js";
+import CardModel from '../models/cards.js'
+import handleFailError from '../utils/handleErrors.js'
 
 const getAllCards = (req, res, next) => {
   CardModel.find({})
-    .populate(["owner", "likes"])
+    .populate(['owner', 'likes'])
     .then((cards) => {
-      res.send(cards);
+      res.send(cards)
     })
-    .catch(next);
-};
+    .catch(next)
+}
 
 const getCard = (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.params
   CardModel.findById(id)
-    .populate(["owner", "likes"])
+    .populate(['owner', 'likes'])
     .orFail(handleFailError)
     .then((card) => {
-      res.send(card);
+      res.send(card)
     })
-    .catch(next);
-};
+    .catch(next)
+}
 
 const createCard = (req, res, next) => {
-  const { user } = req;
-  const { name, link, likes, createdAt } = req.body;
+  const { user } = req
+  const {
+    name, link, likes, createdAt,
+  } = req.body
   CardModel.create({
     name,
     link,
@@ -32,63 +34,65 @@ const createCard = (req, res, next) => {
     owner: user._id,
   })
     .then((card) => {
-      res.send(card);
+      res.send(card)
     })
-    .catch(next);
-};
+    .catch(next)
+}
 
 const likeCard = (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.params
   CardModel.findByIdAndUpdate(
     id,
     { $addToSet: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
-    .populate("owner")
+    .populate('owner')
     .orFail(handleFailError)
     .then((card) => {
-      res.send(card);
+      res.send(card)
     })
-    .catch(next);
-};
+    .catch(next)
+}
 
 const dislikeCard = (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.params
   CardModel.findByIdAndUpdate(
     id,
     { $pull: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
-    .populate("owner")
+    .populate('owner')
     .orFail(handleFailError)
     .then((card) => {
-      res.send(card);
+      res.send(card)
     })
-    .catch(next);
-};
+    .catch(next)
+}
 
 const deleteCard = (req, res, next) => {
-  const { id } = req.params;
-  const userId = req.user._id;
+  const { id } = req.params
+  const userId = req.user._id
 
   CardModel.findById(id)
     .orFail(handleFailError)
     .then((card) => {
       if (card.owner.toString() !== userId.toString()) {
         const error = new Error(
-          "No tienes permisos para eliminar esta tarjeta"
-        );
-        error.statusCode = 403;
-        return next(error);
+          'No tienes permisos para eliminar esta tarjeta',
+        )
+        error.statusCode = 403
+        return next(error)
       }
-      return CardModel.findByIdAndDelete(id);
+      return CardModel.findByIdAndDelete(id)
     })
     .then((deletedCard) => {
       if (deletedCard) {
-        res.send({ status: true, message: "Tarjeta eliminada exitosamente" });
+        res.send({ status: true, message: 'Tarjeta eliminada exitosamente' })
       }
     })
-    .catch(next);
-};
+    .catch(next)
+}
 
-export { getAllCards, getCard, createCard, likeCard, dislikeCard, deleteCard };
+export {
+  getAllCards, getCard, createCard, likeCard, dislikeCard, deleteCard,
+}

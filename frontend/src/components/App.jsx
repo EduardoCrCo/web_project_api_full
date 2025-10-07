@@ -55,7 +55,7 @@ function App() {
           setEmail(email);
           setIsLoggedIn(true);
 
-          return api.getUserInfo(); // ✅ Leer datos del usuario
+          return api.getUserInfo();
         }
       })
       .then((user) => {
@@ -74,7 +74,7 @@ function App() {
   const handleTooltipClose = () => {
     setIsInfoTooltipOpen(false);
     if (isTooltipSuccess) {
-      navigate("/login"); // Redirige cuando el usuario cierra el modal
+      navigate("/login");
     }
   };
 
@@ -86,7 +86,7 @@ function App() {
     const token = localStorage.getItem("jwt");
     if (token) {
       api
-        .getUserInfo() // ✅ Lee token automáticamente
+        .getUserInfo()
         .then((data) => {
           setCurrentUser(data);
           setEmail(data.email);
@@ -98,8 +98,6 @@ function App() {
           setIsLoggedIn(false);
           setCurrentUser({});
           setEmail(null);
-          //showErrorTooltip("Session expired. Please log in again.");
-          //
           localStorage.removeItem("jwt");
           navigate("/login");
         });
@@ -107,9 +105,6 @@ function App() {
   }, [navigate]);
 
   const handleUpdateUser = (data) => {
-    // const token = localStorage.getItem("jwt");
-    // (async () => {
-    //   await
     api
       .updateUser(data.name, data.about)
       .then((newData) => {
@@ -119,11 +114,9 @@ function App() {
       .catch((err) => {
         console.error("Error updating user info:", err);
       });
-    //})();
   };
 
   const handleUpdateAvatar = (avatar) => {
-    // const token = localStorage.getItem("jwt");
     api
       .updateAvatar(avatar)
       .then((user) => {

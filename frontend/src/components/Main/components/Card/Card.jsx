@@ -7,8 +7,6 @@ import like from "../../../../images/Group-heart.svg";
 export default function Card(props) {
   const { currentUser } = useContext(CurrentUserContext);
 
-  //const isOwn =
-  //  props.owner === currentUser._id || props.owner === currentUser.id;
   const cardOwnerId =
     typeof props.owner === "string" ? props.owner : props.owner?._id;
 

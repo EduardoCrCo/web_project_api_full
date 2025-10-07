@@ -50,15 +50,12 @@ class Api {
       method,
       headers: {
         "Content-Type": "application/json",
-        //Authorization: `Bearer ${this._getToken()}`,
       },
     };
 
     const token = this._getToken();
     if (token) {
       config.headers.Authorization = token;
-      // } else {
-      //   return Promise.reject(new Error("Authentication token is missing."));
     }
 
     if (method !== "GET" && method !== "DELETE") {
@@ -74,9 +71,6 @@ class Api {
   }
 }
 
-const api = new Api(
-  "https://api.web-project-around.ignorelist.com/"
-  //localStorage.getItem("jwt") ? `Bearer ${localStorage.getItem("jwt")}` : null
-);
+const api = new Api("https://api.web-project-around.ignorelist.com/");
 
 export default api;
