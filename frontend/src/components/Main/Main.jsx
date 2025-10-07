@@ -31,7 +31,7 @@ export default function Main({ popupType, setPopupType, handlePopupClose }) {
       .catch((err) => {
         console.error("Error loading cards:", err);
       });
-  }, []);
+  }, [currentUser._id]);
 
   const handleAddPlaceSubmit = ({ name, link }) => {
     api
@@ -168,7 +168,7 @@ export default function Main({ popupType, setPopupType, handlePopupClose }) {
           <div className="grid">
             {cards.map((card) => {
               const isLiked = card.likes?.some((userId) => {
-                //userId === userContext.currentUser._id
+                //userId === userContext.currentUser._id;
                 const likeUserId =
                   typeof userId === "string" ? userId : userId?._id;
                 const currentUserId = currentUser._id;
