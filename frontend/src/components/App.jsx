@@ -91,11 +91,15 @@ function App() {
           setCurrentUser(data);
           setEmail(data.email);
           setIsLoggedIn(true);
-          //navigate("/");
+          navigate("/");
         })
         .catch((err) => {
           console.error("Token validation error:", err);
           setIsLoggedIn(false);
+          setCurrentUser({});
+          setEmail(null);
+          //showErrorTooltip("Session expired. Please log in again.");
+          //
           localStorage.removeItem("jwt");
           navigate("/login");
         });
