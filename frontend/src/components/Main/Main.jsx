@@ -25,8 +25,8 @@ export default function Main({ popupType, setPopupType, handlePopupClose }) {
   useEffect(() => {
     api
       .getCards()
-      .then((newCards) => {
-        setCards(newCards);
+      .then((cards) => {
+        setCards(cards);
       })
       .catch((err) => {
         console.error("Error loading cards:", err);
