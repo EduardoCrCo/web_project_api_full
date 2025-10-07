@@ -25,8 +25,8 @@ export default function Main({ popupType, setPopupType, handlePopupClose }) {
   useEffect(() => {
     api
       .getCards()
-      .then((cards) => {
-        setCards(cards);
+      .then((newCards) => {
+        setCards(newCards);
       })
       .catch((err) => {
         console.error("Error loading cards:", err);
@@ -167,9 +167,29 @@ export default function Main({ popupType, setPopupType, handlePopupClose }) {
         <section className="elements">
           <div className="grid">
             {cards.map((card) => {
-              const isLiked = card.likes?.some(
-                (userId) => userId === userContext.currentUser._id
-              );
+              const isLiked = card.likes?.some((userId) => {
+                //userId === userContext.currentUser._id
+                const likeUserId =
+                  typeof userId === "string" ? userId : userId?._id;
+                const currentUserId = currentUser._id;
+
+                // 🐛 Debug temporal
+                if (card.name === cards[0]?.name) {
+                  // Solo loguear la primera card para no saturar
+                  console.log(`🔍 Comparando like en "${card.name}":`, {
+                    likeUserId,
+                    currentUserId,
+                    match: likeUserId === currentUserId,
+                  });
+                }
+
+                return likeUserId === currentUserId;
+              });
+
+              // 🐛 Debug temporal
+              if (card.name === cards[0]?.name) {
+                console.log(`❤️ Card "${card.name}" isLiked:`, isLiked);
+              }
 
               return (
                 <Card
@@ -184,6 +204,7 @@ export default function Main({ popupType, setPopupType, handlePopupClose }) {
                   owner={card.owner}
                   isLiked={isLiked}
                   _id={card._id}
+                  likes={card.likes}
                 />
               );
             })}
