@@ -181,6 +181,7 @@ export default function Main({ popupType, setPopupType, handlePopupClose }) {
                   }}
                   name={card.name}
                   link={card.link}
+                  owner={card.owner}
                   isLiked={isLiked}
                   _id={card._id}
                 />

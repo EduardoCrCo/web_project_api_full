@@ -90,7 +90,8 @@ function App() {
         .then((data) => {
           setCurrentUser(data);
           setEmail(data.email);
-          setIsLoggedIn(true); //navigate("/");
+          setIsLoggedIn(true);
+          //navigate("/");
         })
         .catch((err) => {
           console.error("Token validation error:", err);
@@ -104,7 +105,7 @@ function App() {
   const handleUpdateUser = (data) => {
     // const token = localStorage.getItem("jwt");
     // (async () => {
-    //   await
+    //   await
     api
       .updateUser(data.name, data.about)
       .then((newData) => {
@@ -113,7 +114,8 @@ function App() {
       })
       .catch((err) => {
         console.error("Error updating user info:", err);
-      }); //})();
+      });
+    //})();
   };
 
   const handleUpdateAvatar = (avatar) => {

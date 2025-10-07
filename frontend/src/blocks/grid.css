@@ -41,6 +41,16 @@
 .grid-card__button-trash-image:hover {
   opacity: 60%;
 }
+
+.grid-card__button-trash_hidden {
+  display: none;
+}
+
+.grid-card__button-trash_visible {
+  display: block;
+  opacity: 1;
+}
+/* ------------------------------- */
 .grid-card__image {
   width: 100%;
   height: 100%;

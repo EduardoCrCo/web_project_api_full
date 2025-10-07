@@ -1,23 +1,36 @@
+import { useContext } from "react";
+import CurrentUserContext from "../../../../contexts/CurrentUserContext";
 import Trash from "../../../../images/Trash.svg";
 import activeLike from "../../../../images/active-like.png";
 import like from "../../../../images/Group-heart.svg";
 
 export default function Card(props) {
+  const { currentUser } = useContext(CurrentUserContext);
+
+  const isOwn =
+    props.owner === currentUser._id || props.owner === currentUser.id;
+
+  const cardTrashButtonClassName = `grid-card__button-trash ${
+    isOwn ? "grid-card__button-trash_visible" : "grid-card__button-trash_hidden"
+  }`;
+
   const cardLikeButtonClassName = "grid-card__button-like";
 
   return (
     <div className="grid-card">
-      <button
-        className="grid-card__button-trash"
-        type="button"
-        onClick={() => props.onConfirmDelete(props._id)}
-      >
-        <img
-          className="grid-card__button-trash-image"
-          src={Trash}
-          alt="bote de basura"
-        />
-      </button>
+      {isOwn && (
+        <button
+          className={cardTrashButtonClassName}
+          type="button"
+          onClick={() => props.onConfirmDelete(props._id)}
+        >
+          <img
+            className="grid-card__button-trash-image"
+            src={Trash}
+            alt="bote de basura"
+          />
+        </button>
+      )}
       <img
         className="grid-card__image"
         src={props.link}
