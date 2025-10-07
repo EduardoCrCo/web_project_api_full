@@ -64,3 +64,9 @@
 - Logs de requests y errores
 - CORS configurado para producción
 - PM2 para recuperación automática del servidor
+
+---
+
+## Dominio:
+
+web-project-around.ignorelist.com
