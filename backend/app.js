@@ -1,6 +1,5 @@
 import express from "express";
 import mongoose from "mongoose";
-import cors from "cors";
 import { errors } from "celebrate";
 import dotenv from "dotenv";
 import cardsRouter from "./routes/cards.js";
@@ -38,7 +37,7 @@ const allowedOrigins = [
 ];
 
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
+  const { origin } = req.headers;
   if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
@@ -52,7 +51,8 @@ app.use((req, res, next) => {
   );
 
   if (req.method === "OPTIONS") {
-    return res.sendStatus(200).end();
+    res.sendStatus(200).end();
+    return;
   }
 
   next();

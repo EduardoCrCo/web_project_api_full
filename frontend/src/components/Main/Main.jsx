@@ -20,7 +20,6 @@ export default function Main({ popupType, setPopupType, handlePopupClose }) {
 
   const userContext = useContext(CurrentUserContext);
   const { currentUser } = userContext;
-  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
     api
@@ -45,26 +44,6 @@ export default function Main({ popupType, setPopupType, handlePopupClose }) {
       });
   };
 
-  // const handleLike = (cardId, isLiked) => {
-  //   if (isLiked) {
-  //     api.deleteLikeCard(cardId).then((card) => {
-  //       setCards((state) =>
-  //         state.map((currentCard) =>
-  //           currentCard._id === card._id ? card : currentCard
-  //         )
-  //       );
-  //     });
-  //   } else {
-  //     api.likeCard(cardId).then((card) => {
-  //       setCards((state) =>
-  //         state.map((currentCard) =>
-  //           currentCard._id === card._id ? card : currentCard
-  //         )
-  //       );
-  //     });
-  //   }
-  // };
-
   const handleLike = (cardId, isLiked) => {
     const request = isLiked ? api.deleteLikeCard(cardId) : api.likeCard(cardId);
 
@@ -81,12 +60,6 @@ export default function Main({ popupType, setPopupType, handlePopupClose }) {
       });
   };
 
-  // const handleDeleteCard = (cardId) => {
-  //   api.deleteCard(cardId).then(() => {
-  //     setCards((state) => state.filter((card) => card._id !== cardId));
-  //     setCardToDelete(null);
-  //   });
-  // };
   const handleDeleteCard = (cardId) => {
     api
       .deleteCard(cardId)
@@ -168,28 +141,11 @@ export default function Main({ popupType, setPopupType, handlePopupClose }) {
           <div className="grid">
             {cards.map((card) => {
               const isLiked = card.likes?.some((userId) => {
-                //userId === userContext.currentUser._id;
                 const likeUserId =
                   typeof userId === "string" ? userId : userId?._id;
                 const currentUserId = currentUser._id;
-
-                // 🐛 Debug temporal
-                if (card.name === cards[0]?.name) {
-                  // Solo loguear la primera card para no saturar
-                  console.log(`🔍 Comparando like en "${card.name}":`, {
-                    likeUserId,
-                    currentUserId,
-                    match: likeUserId === currentUserId,
-                  });
-                }
-
                 return likeUserId === currentUserId;
               });
-
-              // 🐛 Debug temporal
-              if (card.name === cards[0]?.name) {
-                console.log(`❤️ Card "${card.name}" isLiked:`, isLiked);
-              }
 
               return (
                 <Card

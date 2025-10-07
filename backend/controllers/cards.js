@@ -71,14 +71,9 @@ const deleteCard = (req, res, next) => {
   const { id } = req.params;
   const userId = req.user._id;
 
-  // if (!mongoose.Types.ObjectId.isValid(id)) {
-  //   return res.status(400).send({ message: "ID no válido" });
-  // }
-
   CardModel.findById(id)
     .orFail(handleFailError)
     .then((card) => {
-      // Verificar que el usuario es el propietario de la tarjeta
       if (card.owner.toString() !== userId.toString()) {
         const error = new Error(
           "No tienes permisos para eliminar esta tarjeta"
@@ -86,8 +81,6 @@ const deleteCard = (req, res, next) => {
         error.statusCode = 403;
         return next(error);
       }
-
-      // Si es el propietario, eliminar la tarjeta
       return CardModel.findByIdAndDelete(id);
     })
     .then((deletedCard) => {
